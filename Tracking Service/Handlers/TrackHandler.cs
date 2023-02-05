@@ -1,5 +1,6 @@
 ﻿using Dummy_Server.Models;
 using Segment;
+using System.Collections.Generic;
 
 namespace Tracking_Service.Handlers
 {
@@ -7,9 +8,9 @@ namespace Tracking_Service.Handlers
     {
         public void MakeCall(SpecMessage msg)
         {
-            var properties = base.ParseDictValues(msg.properties, msg.DataTypes);
-
-            Analytics.Client.Track(msg.userId, msg.@event, properties);
+            msg.properties.Remove("event",out string @event);
+            Dictionary<string, object> args = msg.properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
+            Analytics.Client.Track(msg.clientId, @event, args);
         }
     }
 }

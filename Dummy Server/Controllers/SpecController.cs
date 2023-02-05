@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Dummy_Server.Services;
 using Dummy_Server.Models;
+using Dummy_Server.Database;
 
 namespace Dummy_Server.Controllers
 {
@@ -14,37 +15,51 @@ namespace Dummy_Server.Controllers
         [HttpGet("/")]
         public IActionResult Index()
         {
-            return Ok("Hello");
+            var db = DB.Instance;
+           
+            //new DB_Receiver().StartReceiving("From_Service");
+
+            return Ok("hi");
         }
 
         [HttpGet("/i")]
         public IActionResult Identify()
         {
-            SpecMessage msg = new SpecMessage(
-                type: SpecType.Identify.ToString(),
-                userId: "1234",
-                traits: new Dictionary<string, object>(){
-                    {"name", 92221},
-                    {"email", "a@a.com" }
-                });
+            Dictionary<string, string> properties = new()
+            {
+                {"type", SpecType.Identify.ToString() },
+                {"age", "21" },
+                {"email", "a@aa.com" },
+                {"needG","1,2,10" }
+            };
+            SpecMessage msg = new SpecMessage("123", properties);
 
-            publisher.Publish("queue", msg.Serialize());
+            publisher.Publish("Spec_Call", msg.Serialize());
+
             return Ok(msg);
         }
 
         [HttpGet("/t")]
         public IActionResult Track()
         {
-            SpecMessage msg = new SpecMessage(
-                type: SpecType.Track.ToString(),
-                userId: "7893",
-                @event: "Click",
-                properties: new Dictionary<string, object>(){
-                    {"buttonId", 832}
-                });
+            Dictionary<string, string> properties = new()
+            {
+                {"type", SpecType.Track.ToString() },
+                {"event", "Click" },
+                {"buttonId", "832" },
+                {"needG","3" }
+            };
+            SpecMessage msg = new SpecMessage("7893", properties);
 
-            publisher.Publish("queue", msg.Serialize());
+            publisher.Publish("Track", msg.Serialize());
             return Ok(msg);
+        }
+
+        [HttpGet("{userId}/props/G/{gid}")]
+        public IActionResult GetGProp(string userId, string gid)
+        {
+            var resp = GProps.Instance.GetOne(userId, gid);
+            return Ok(resp);
         }
     }
 }
