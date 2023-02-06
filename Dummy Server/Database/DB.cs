@@ -44,19 +44,6 @@ namespace Dummy_Server.Database
         //    return res;
         //}
 
-        //public void SendValues(string keyString)
-        //{
-        //    string [] keys = JsonSerializer.Deserialize<string[]>(keyString);
-        //    var vals = GetValues(keys);
-        //    var options = new JsonSerializerOptions
-        //    {
-        //        WriteIndented = true
-        //    };
-        //    var jsonString = JsonSerializer.Serialize(vals, options);
-
-        //    new Publisher().Publish("To_Service", jsonString);
-        //}
-
 
     }
 }

@@ -20,23 +20,23 @@ namespace Tracking_Service.Handlers
         public async void MakeCall(string messageString)
         {
             SpecMessage msg = JsonSerializer.Deserialize<SpecMessage>(messageString);
-            msg.properties.Remove("needG", out string needGString);
-            string[] needG = needGString.Split(',');
+            msg.properties.Remove("needCommon", out string needGString);
+            string[] needCommon = needGString.Split(',');
             Dictionary<string, string> allProps = new();
 
-            if (needG != null && needG.Length > 0)
+            if (needCommon != null && needCommon.Length > 0)
             {
                 var CachedGProps = GetCachedProps(msg.clientId);
-                foreach(var gIndex in needG)
+                foreach(var commonKey in needCommon)
                 {
                     Dictionary<string, string> GProp = new();
-                    if (CachedGProps.ContainsKey(gIndex))
+                    if (CachedGProps.ContainsKey(commonKey))
                     {
-                        GProp = CachedGProps[gIndex];
+                        GProp = CachedGProps[commonKey];
                     }
                     else
                     {
-                        var response = await HttpController.Get($"https://localhost:5001/{msg.clientId}/props/G/{gIndex}");
+                        var response = await HttpController.Get($"https://localhost:5001/{msg.clientId}/props/{commonKey}");
                         Dictionary<string, string> res = JsonSerializer.Deserialize<Dictionary<string, string>>(response);
                         GProp = res;
                     }

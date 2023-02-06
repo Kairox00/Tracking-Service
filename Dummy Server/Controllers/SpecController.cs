@@ -15,10 +15,6 @@ namespace Dummy_Server.Controllers
         [HttpGet("/")]
         public IActionResult Index()
         {
-            var db = DB.Instance;
-           
-            //new DB_Receiver().StartReceiving("From_Service");
-
             return Ok("hi");
         }
 
@@ -30,7 +26,7 @@ namespace Dummy_Server.Controllers
                 {"type", SpecType.Identify.ToString() },
                 {"age", "21" },
                 {"email", "a@aa.com" },
-                {"needG","1,2,10" }
+                {"needCommon","1,2,10" }
             };
             SpecMessage msg = new SpecMessage("123", properties);
 
@@ -47,7 +43,7 @@ namespace Dummy_Server.Controllers
                 {"type", SpecType.Track.ToString() },
                 {"event", "Click" },
                 {"buttonId", "832" },
-                {"needG","3" }
+                {"needCommon","3" }
             };
             SpecMessage msg = new SpecMessage("7893", properties);
 
@@ -55,10 +51,10 @@ namespace Dummy_Server.Controllers
             return Ok(msg);
         }
 
-        [HttpGet("{userId}/props/G/{gIndex}")]
-        public IActionResult GetGProp(string id, string gIndex)
+        [HttpGet("{id}/props/{commonIndex}")]
+        public IActionResult GetCommonProp(string id, string commonIndex)
         {
-            var resp = GProps.Instance.GetOne(id, gIndex);
+            var resp = CommonProps.Instance.GetOne(id, commonIndex);
             return Ok(resp);
         }
     }
