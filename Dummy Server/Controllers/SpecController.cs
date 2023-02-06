@@ -55,10 +55,10 @@ namespace Dummy_Server.Controllers
             return Ok(msg);
         }
 
-        [HttpGet("{userId}/props/G/{gid}")]
-        public IActionResult GetGProp(string userId, string gid)
+        [HttpGet("{userId}/props/G/{gIndex}")]
+        public IActionResult GetGProp(string id, string gIndex)
         {
-            var resp = GProps.Instance.GetOne(userId, gid);
+            var resp = GProps.Instance.GetOne(id, gIndex);
             return Ok(resp);
         }
     }

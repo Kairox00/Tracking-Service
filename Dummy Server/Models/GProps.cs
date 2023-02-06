@@ -49,12 +49,16 @@ namespace Dummy_Server.Models
         {
             Dictionary<string, Dictionary<string, string>> CachedProps = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(Cache.StringGet(id));
             Dictionary<string, string> res = new();
-            List<string> props = gprops.Value[gIndex];
+            bool exists = gprops.Value.TryGetValue(gIndex, out List<string> props);
+            if (!exists)
+            {
+                return new Dictionary<string, string>() { { "error", $"index {gIndex} not found" } };
+            }
             foreach (string prop in props)
             {
                 res.Add(prop, DB.Instance.GetValue(id, prop));
             }
-            CachedProps.Add(gIndex, res);
+            CachedProps[gIndex] = res;
             Cache.StringSet(id, JsonSerializer.Serialize<Dictionary<string, Dictionary<string, string>>>(CachedProps));
 
             return res;
