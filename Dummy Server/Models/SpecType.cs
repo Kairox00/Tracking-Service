@@ -4,7 +4,8 @@
     {
         Identify,
         Track,
-        Group
+        Group,
+        Alias
     }
 
 
