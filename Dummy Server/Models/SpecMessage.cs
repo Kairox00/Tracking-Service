@@ -8,6 +8,7 @@ namespace Dummy_Server.Models
         public string clientId { get; set; }
 
         public Dictionary<string, string> properties { get; set;}
+        
 
 
         public SpecMessage(string clientId, Dictionary<string, string> properties)

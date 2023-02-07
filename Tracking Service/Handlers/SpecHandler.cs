@@ -20,31 +20,40 @@ namespace Tracking_Service.Handlers
         public async void MakeCall(string messageString)
         {
             SpecMessage msg = JsonSerializer.Deserialize<SpecMessage>(messageString);
-            msg.properties.Remove("needCommon", out string needGString);
-            string[] needCommon = needGString.Split(',');
+            msg.properties.Remove("type", out string type);
+            msg.properties.Remove("needCommon", out string needCommonString);          
+            string[] needCommon = needCommonString.Split(',');
             Dictionary<string, string> allProps = new();
 
             if (needCommon != null && needCommon.Length > 0)
             {
-                var CachedGProps = GetCachedProps(msg.clientId);
-                foreach(var commonKey in needCommon)
-                {
-                    Dictionary<string, string> GProp = new();
-                    if (CachedGProps.ContainsKey(commonKey))
-                    {
-                        GProp = CachedGProps[commonKey];
-                    }
-                    else
-                    {
-                        var response = await HttpController.Get($"https://localhost:5001/{msg.clientId}/props/{commonKey}");
-                        Dictionary<string, string> res = JsonSerializer.Deserialize<Dictionary<string, string>>(response);
-                        GProp = res;
-                    }
-                    GProp.ToList().ForEach(pair => allProps[pair.Key] = pair.Value);
-                }
+                await GetCommonProps(needCommon, msg, allProps);
+                //var CachedGProps = GetCachedProps(msg.clientId);
+                //string keysToFetch = "";
+                //foreach(var commonKey in needCommon)
+                //{
+                //    Dictionary<string, string> GProp = new();
+                //    if (CachedGProps.ContainsKey(commonKey))
+                //    {
+                //        GProp = CachedGProps[commonKey];
+                //        GProp.ToList().ForEach(pair => allProps[pair.Key] = pair.Value);
+                //    }
+                //    else
+                //    {
+                //        keysToFetch += commonKey + "&";
+                //    }
+                  
+                //}
+                //if (keysToFetch.Length > 0)
+                //{
+                //    keysToFetch = keysToFetch.Remove(keysToFetch.Length - 1);
+                //    var response = await HttpController.Get($"https://localhost:5001/{msg.clientId}/propsAll/{keysToFetch}");
+                //    Dictionary<string, string> GProp = JsonSerializer.Deserialize<Dictionary<string, string>>(response);
+                //    GProp.ToList().ForEach(pair => allProps[pair.Key] = pair.Value);
+                //}
+
             }
 
-            msg.properties.Remove("type", out string type);
             allProps.ToList().ForEach(pair => msg.properties[pair.Key] = pair.Value);
             switch (type)
             {
@@ -86,8 +95,34 @@ namespace Tracking_Service.Handlers
             }
             else
             {
-                cache.SetAdd(id,"{}");
                 return new Dictionary<string, Dictionary<string, string>>();
+            }
+        }
+
+        private async Task GetCommonProps(string[] needCommon, SpecMessage msg, Dictionary<string, string> allProps)
+        {
+            var CachedGProps = GetCachedProps(msg.clientId);
+            string keysToFetch = "";
+            foreach (var commonKey in needCommon)
+            {
+                Dictionary<string, string> GProp = new();
+                if (CachedGProps.ContainsKey(commonKey))
+                {
+                    GProp = CachedGProps[commonKey];
+                    GProp.ToList().ForEach(pair => allProps[pair.Key] = pair.Value);
+                }
+                else
+                {
+                    keysToFetch += commonKey + "&";
+                }
+
+            }
+            if (keysToFetch.Length > 0)
+            {
+                keysToFetch = keysToFetch.Remove(keysToFetch.Length - 1);
+                var response = await HttpController.Get($"https://localhost:5001/{msg.clientId}/propsAll/{keysToFetch}");
+                Dictionary<string, string> GProp = JsonSerializer.Deserialize<Dictionary<string, string>>(response);
+                GProp.ToList().ForEach(pair => allProps[pair.Key] = pair.Value);
             }
         }
        

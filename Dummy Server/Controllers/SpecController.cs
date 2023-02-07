@@ -28,9 +28,9 @@ namespace Dummy_Server.Controllers
                 {"email", "a@aa.com" },
                 {"needCommon","1,2,10" }
             };
-            SpecMessage msg = new SpecMessage("123", properties);
+            SpecMessage msg = new SpecMessage("911", properties);
 
-            publisher.Publish("Spec_Call", msg.Serialize());
+            publisher.Publish("Identify", msg.Serialize());
 
             return Ok(msg);
         }
@@ -43,11 +43,26 @@ namespace Dummy_Server.Controllers
                 {"type", SpecType.Track.ToString() },
                 {"event", "Click" },
                 {"buttonId", "832" },
-                {"needCommon","3" }
+                {"needCommon","2" }
             };
-            SpecMessage msg = new SpecMessage("7893", properties);
+            SpecMessage msg = new SpecMessage("1234", properties);
 
             publisher.Publish("Track", msg.Serialize());
+            return Ok(msg);
+        }
+
+        [HttpGet("/g")]
+        public IActionResult Group()
+        {
+            Dictionary<string, string> properties = new()
+            {
+                {"type", SpecType.Group.ToString() },
+                {"groupId", "4576" },
+                {"needCommon","2" }
+            };
+            SpecMessage msg = new SpecMessage("1234", properties);
+
+            publisher.Publish("Group", msg.Serialize());
             return Ok(msg);
         }
 
@@ -55,6 +70,13 @@ namespace Dummy_Server.Controllers
         public IActionResult GetCommonProp(string id, string commonIndex)
         {
             var resp = CommonProps.Instance.GetOne(id, commonIndex);
+            return Ok(resp);
+        }
+
+        [HttpGet("{id}/propsAll/{commonIndeces}")]
+        public IActionResult GetAllCommonProp(string id, string commonIndeces)
+        {
+            var resp = CommonProps.Instance.GetAll(id, commonIndeces);
             return Ok(resp);
         }
     }

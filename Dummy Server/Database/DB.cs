@@ -17,6 +17,16 @@ namespace Dummy_Server.Database
                 { "pricePlan", "premium" },
                 {"cost", "10000"}
             });
+
+            this.Add("1234", new Dictionary<string, string>
+            {
+                {"company","starbucks" },
+                {"job","manager"},
+                { "companyAddress","new cairo"},
+                {"didTheyQuit?","False"},
+                { "pricePlan", "basic" },
+                {"cost", "100"}
+            });
         }
 
         private static readonly Lazy<DB> db = new Lazy<DB>(() => new DB());
@@ -30,7 +40,14 @@ namespace Dummy_Server.Database
 
         public string GetValue(string id, string key)
         {
-            return db.Value[id][key];
+            bool keyExists = db.Value[id].TryGetValue(key, out var value);
+            if (keyExists) return value;
+            return "None";
+        }
+
+        public bool UserExistsInDB(string id)
+        {
+            return db.Value.ContainsKey(id);
         }
 
         //public Dictionary<string, object> GetValues(string id, List<string> keys)

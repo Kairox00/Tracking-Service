@@ -48,11 +48,11 @@ namespace Dummy_Server.Tests
         }
 
         [Fact]
-        public async void GetCommonPropTest()
+        public void GetCommonPropTest()
         {
             //Arrange
             var id = "123";
-            var gIndex = "2";
+            var gIndex = "1";
             var controller = new SpecController();
 
             //Act
@@ -64,6 +64,29 @@ namespace Dummy_Server.Tests
 
             var response = okObjectResult.Value as Dictionary<string, string>;
             Assert.NotNull(response);
+            output.WriteLine(string.Join(", ", response.Select(x => $"{{{x.Key}: {x.Value}}}").ToArray()));
+
+        }
+
+        [Fact]
+        public void GetAllCommonPropTest()
+        {
+            //Arrange
+            var id = "123";
+            var gIndeces = "10&11";
+            var controller = new SpecController();
+
+            //Act
+            var actionResult = controller.GetAllCommonProp(id, gIndeces);
+
+            //Assert
+            var okObjectResult = actionResult as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+
+            var response = okObjectResult.Value as Dictionary<string, string>;
+            Assert.NotNull(response);
+            Assert.True(!response.ContainsKey("error"));
+
             output.WriteLine(string.Join(", ", response.Select(x => $"{{{x.Key}: {x.Value}}}").ToArray()));
 
         }

@@ -9,8 +9,16 @@ namespace Tracking_Service.Handlers
     {
         public void MakeCall(SpecMessage msg)
         {
+            msg.properties.Remove("error", out string errorMsg);
+            Options options = new Options();
+            if (errorMsg != null)
+            {
+                Context context = new Context();
+                context = context.Add("error", errorMsg);
+                options.SetContext(context);
+            }
             Dictionary<string, object> args = msg.properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-            Analytics.Client.Identify(msg.clientId, args);
+            Analytics.Client.Identify(msg.clientId, args, options);
         }
     }
 }

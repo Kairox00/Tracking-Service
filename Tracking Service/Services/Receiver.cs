@@ -45,8 +45,8 @@ public class Receiver
         using var channel = connection.CreateModel();
 
         // Create and start both listeners
-        Task.Run(() => ListenOnQueue(channel, "Spec_Call"));
-        //Task.Run(() => ListenOnQueue(channel, "Track"));
+        Task.Run(() => ListenOnQueue(channel, "Identify"));
+        Task.Run(() => ListenOnQueue(channel, "Track"));
 
         Console.WriteLine(" Press [enter] to exit.");
         Console.ReadLine();
