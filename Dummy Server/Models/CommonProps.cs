@@ -74,7 +74,7 @@ namespace Dummy_Server.Models
                 {
                     CachedProps = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(Cache.StringGet(id));
                 }
-                catch (JsonException e)
+                catch (Exception e)
                 {
                     CachedProps = new();
                 }
