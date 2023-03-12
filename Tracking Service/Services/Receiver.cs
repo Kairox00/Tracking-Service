@@ -26,7 +26,7 @@ public class Receiver
             var message = Encoding.UTF8.GetString(body);
             Console.WriteLine($" [x] Received on {Queue} {message}");
             SpecMessage msg = JsonSerializer.Deserialize<SpecMessage>(message);
-            await handler.MakeCall(msg);
+            await handler.SendToSegment(msg);
             
         };
         channel.BasicConsume(Queue, autoAck: true, consumer: consumer);

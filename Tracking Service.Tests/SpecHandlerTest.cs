@@ -1,3 +1,4 @@
+using Dummy_Server.Models;
 using Tracking_Service.Handlers;
 
 namespace Tracking_Service.Tests
@@ -5,12 +6,19 @@ namespace Tracking_Service.Tests
     public class SpecHandlerTest
     {
         //[Fact]
-        //public void MakeCallTest()
+        //public async void MakeCallTest()
         //{
-        //    string messageString = "{\"clientId\":\"123\",\"properties\":{\"type\":\"Identify\",\"age\":\"21\",\"email\":\"a@aa.com\",\"needCommon\":\"1,2,10\"}}";
-        //    var handler = new SpecHandler();
+        //    Dictionary<string, string> properties = new()
+        //    {
+        //        {"type", SpecType.Identify.ToString() },
+        //        {"age", "21" },
+        //        {"email", "a@aa.com" },
+        //        {"needCommon","1,2,10" }
+        //    };
+        //    SpecMessage msg = new SpecMessage("123", properties);
+        //    var handler = new IdentifyHandler();
 
-        //    handler.MakeCall(messageString);
+        //    await handler.MakeCall(msg);
 
         //}
     }

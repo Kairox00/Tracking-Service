@@ -42,8 +42,7 @@ namespace Dummy_Server.Controllers
             {
                 {"type", SpecType.Track.ToString() },
                 {"event", "Click" },
-                {"buttonId", "832" },
-                {"needCommon","2" }
+                {"buttonId", "832" }
             };
             SpecMessage msg = new SpecMessage("1234", properties);
 

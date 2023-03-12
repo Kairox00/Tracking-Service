@@ -17,37 +17,8 @@ namespace Dummy_Server.Models
             this.properties = properties;
         }
 
-        //Dictionary<string, string> GetTypeMap()
-        //{
-        //    Dictionary<string, string> TypeMap = new();
-
-        //    if (properties != null)
-        //    {
-        //        foreach (KeyValuePair<string, object> kvp in properties)
-        //        {
-        //            TypeMap.Add(kvp.Key, kvp.Value.GetType().ToString());
-        //        }
-        //    }
-
-        //    if (traits != null)
-        //    {
-        //        foreach (KeyValuePair<string, object> kvp in traits)
-        //        {
-        //            TypeMap.Add(kvp.Key, kvp.Value.GetType().ToString());
-        //        }
-        //    }
-
-        //    return TypeMap;
-
-        //}
-
-
         public string Serialize()
         {
-            //var options = new JsonSerializerOptions
-            //{
-            //    WriteIndented = true
-            //};
             var jsonString = JsonSerializer.Serialize(this);
             return jsonString;
         }

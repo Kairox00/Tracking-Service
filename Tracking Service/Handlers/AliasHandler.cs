@@ -6,13 +6,10 @@ namespace Tracking_Service.Handlers
 {
     public class AliasHandler : SpecHandler, IHandler
     {
-        public async Task MakeCall(SpecMessage msg)
+        public async Task SendToSegment(SpecMessage msg)
         {
-            await CheckMessage(msg);
-            Console.WriteLine(msg);
-            Options options = AddErrorToContext(msg);
-            msg.properties.Remove("newId", out string newId);
-            Analytics.Client.Alias(msg.clientId, newId, options);
+            Dictionary<string, object> dict = await ProcessMessage(msg);
+            Analytics.Client.Alias(msg.clientId, (string)dict["newId"], (Options)dict["options"]);
         }
     }
 }

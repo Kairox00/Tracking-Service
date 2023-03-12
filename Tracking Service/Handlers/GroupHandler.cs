@@ -6,14 +6,10 @@ namespace Tracking_Service.Handlers
 {
     public class GroupHandler : SpecHandler, IHandler
     {
-        public async Task MakeCall(SpecMessage msg)
+        public async Task SendToSegment(SpecMessage msg)
         {
-            await CheckMessage(msg);
-            Console.WriteLine(msg);
-            Options options = AddErrorToContext(msg);
-            msg.properties.Remove("groupId", out string groupId);
-            Dictionary<string, object> args = msg.properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-            Analytics.Client.Group(msg.clientId, groupId, args);
+            Dictionary<string, object> dict = await ProcessMessage(msg);
+            Analytics.Client.Group(msg.clientId, (string)dict["groupId"], (IDictionary<string, object>)dict["args"], (Options)dict["options"]);
         }
     }
 }

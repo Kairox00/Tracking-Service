@@ -4,6 +4,6 @@ namespace Tracking_Service.Handlers
 {
     public interface IHandler
     {
-        Task MakeCall(SpecMessage msg);
+        Task SendToSegment(SpecMessage msg);
     }
 }
