@@ -18,13 +18,49 @@ namespace Tracking_Service.Handlers
             _redis = new RedisController();
             cache = _redis.db;
         }
-        
+
+        /// <summary>
+        /// Performs some common processing to the <see cref="SpecMessage"/> message and prepares it to be sent to the tracking service
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns>A <see cref="Task"/> that results in a <see cref="Dictionary{TKey, TValue}"/></returns>
+        protected async Task<Dictionary<string, object>> ProcessMessage(SpecMessage msg)
+        {
+            await AddCommonPropsToMessage(msg);
+            Options options = AddErrorToContext(msg);
+            msg.properties.Remove("event", out string @event);
+            msg.properties.Remove("newId", out string newId);
+            msg.properties.Remove("groupId", out string groupId);
+            Dictionary<string, object> args = msg.properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
+
+            return new Dictionary<string, object>()
+            {
+                {"clientId", msg.clientId },
+                {"event", @event },
+                {"newId", newId },
+                {"groupId", groupId },
+                {"options", options},
+                {"args", args }
+            };
+        }
+
+        /// <summary>
+        /// Checks whether the id exists and of type <see cref="string"/>
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>True if id exists and is of type <see cref="string"/>, otherwise returns False.</returns>
+        protected bool Validate(Dictionary<string, object> data)
+        {
+            return data["clientId"] != null && data["clientId"].GetType() == typeof(string);
+        }
+
+
         /// <summary>
         /// Fetches and Inserts the Common Properties into <paramref name="msg"/>.
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        protected async Task AddCommonPropsToMessage(SpecMessage msg)
+        private async Task AddCommonPropsToMessage(SpecMessage msg)
         {
             msg.properties.Remove("needCommon", out string needCommonString);  
             if(needCommonString != null)
@@ -40,19 +76,6 @@ namespace Tracking_Service.Handlers
                 allProps.ToList().ForEach(pair => msg.properties[pair.Key] = pair.Value);
             }
                
-        }
-
-        protected Dictionary<string, object> ParseDictValues(Dictionary<string, object> input, Dictionary<string, string> map)
-        {
-            var dict = new Dictionary<string, object>();
-            foreach (var entry in input)
-            {
-                string valueString = entry.Value.ToString();
-                Type dataType = Type.GetType(map[entry.Key]);
-                dict.Add(entry.Key, Convert.ChangeType(valueString, dataType));
-            }
-
-            return dict;
         }
 
         /// <summary>
@@ -112,7 +135,7 @@ namespace Tracking_Service.Handlers
         /// </summary>
         /// <param name="msg">The <see cref="SpecMessage"/> to be sent to the tracking service</param>
         /// <returns><see cref="Options"/> object containing the error message in its <see cref="Context"/></returns>
-        protected Options AddErrorToContext(SpecMessage msg)
+        private Options AddErrorToContext(SpecMessage msg)
         {
             msg.properties.Remove("error", out string errorMsg);
             Options options = new Options();
@@ -124,32 +147,6 @@ namespace Tracking_Service.Handlers
             }
             return options;
         }
-
-        /// <summary>
-        /// Performs some common processing to the <see cref="SpecMessage"/> message and prepares it to be sent to the tracking service
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns>A <see cref="Task"/> that results in a <see cref="Dictionary{TKey, TValue}"/></returns>
-        protected async Task<Dictionary<string, object>> ProcessMessage(SpecMessage msg)
-        {
-            await AddCommonPropsToMessage(msg);
-            Options options = AddErrorToContext(msg);
-            msg.properties.Remove("event", out string @event);
-            msg.properties.Remove("newId", out string newId);
-            msg.properties.Remove("groupId", out string groupId);
-            Dictionary<string, object> args = msg.properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-
-            return new Dictionary<string, object>()
-            {
-                {"event", @event },
-                {"newId", newId },
-                {"groupId", groupId },
-                {"options", options},
-                {"args", args }
-            };
-        }
-
-
        
     }
 }

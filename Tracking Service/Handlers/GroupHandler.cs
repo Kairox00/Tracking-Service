@@ -6,10 +6,20 @@ namespace Tracking_Service.Handlers
 {
     public class GroupHandler : SpecHandler, IHandler
     {
-        public async Task SendToSegment(SpecMessage msg)
+        public async Task SendToTracker(SpecMessage msg)
         {
-            Dictionary<string, object> dict = await ProcessMessage(msg);
-            Analytics.Client.Group(msg.clientId, (string)dict["groupId"], (IDictionary<string, object>)dict["args"], (Options)dict["options"]);
+            Dictionary<string, object> data = await ProcessMessage(msg);
+            if (Validate(data))
+            {
+                Analytics.Client.Group(msg.clientId, (string)data["groupId"], (IDictionary<string, object>)data["args"], (Options)data["options"]);
+            }
+           
+        }
+
+        private new bool Validate(Dictionary<string, object> data)
+        {
+            return base.Validate(data)
+                && (data["groupId"] != null && data["groupId"].GetType() == typeof(string));
         }
     }
 }

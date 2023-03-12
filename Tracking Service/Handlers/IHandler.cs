@@ -4,6 +4,12 @@ namespace Tracking_Service.Handlers
 {
     public interface IHandler
     {
-        Task SendToSegment(SpecMessage msg);
+        /// <summary>
+        /// Sends the content of <paramref name="msg"/> to the tracking service.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        Task SendToTracker(SpecMessage msg);
+       
     }
 }

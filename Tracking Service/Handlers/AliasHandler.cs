@@ -6,10 +6,19 @@ namespace Tracking_Service.Handlers
 {
     public class AliasHandler : SpecHandler, IHandler
     {
-        public async Task SendToSegment(SpecMessage msg)
+        public async Task SendToTracker(SpecMessage msg)
         {
-            Dictionary<string, object> dict = await ProcessMessage(msg);
-            Analytics.Client.Alias(msg.clientId, (string)dict["newId"], (Options)dict["options"]);
+            Dictionary<string, object> data = await ProcessMessage(msg);
+            if (Validate(data))
+            {
+                Analytics.Client.Alias(msg.clientId, (string)data["newId"], (Options)data["options"]);
+            }
+        }
+
+        private new bool Validate(Dictionary<string, object> data)
+        {
+            return base.Validate(data)
+                && (data["newId"] != null && data["newId"].GetType() == typeof(string));
         }
     }
 }
