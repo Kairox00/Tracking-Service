@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking Service.Tests", "T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dummy Server.Tests", "Dummy Server.Tests\Dummy Server.Tests.csproj", "{DB1A36C1-1FA1-40A9-9C8A-C2C7C2C01D6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gameball.MassTransit", "Gameball.MassTransit\Gameball.MassTransit.csproj", "{E961F79B-6AB6-46D4-A864-71105B3963D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DB1A36C1-1FA1-40A9-9C8A-C2C7C2C01D6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB1A36C1-1FA1-40A9-9C8A-C2C7C2C01D6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB1A36C1-1FA1-40A9-9C8A-C2C7C2C01D6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E961F79B-6AB6-46D4-A864-71105B3963D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E961F79B-6AB6-46D4-A864-71105B3963D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E961F79B-6AB6-46D4-A864-71105B3963D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E961F79B-6AB6-46D4-A864-71105B3963D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿using Dummy_Server.Models;
+﻿using Gameball.MassTransit;
 using Segment;
 using Segment.Model;
 

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dummy Server\Dummy Server.csproj" />
+    <ProjectReference Include="..\Gameball.MassTransit\Gameball.MassTransit.csproj" />
   </ItemGroup>
 
 </Project>
