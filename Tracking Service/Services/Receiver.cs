@@ -5,8 +5,8 @@ using System.Text;
 using Segment;
 using Microsoft.AspNetCore.Connections;
 using Tracking_Service.Handlers;
-using Dummy_Server.Models;
 using System.Text.Json;
+using Gameball.MassTransit;
 
 namespace Tracking_Service.Receivers;
 public class Receiver

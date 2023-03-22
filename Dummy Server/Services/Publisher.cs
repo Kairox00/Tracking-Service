@@ -15,7 +15,7 @@ namespace Dummy_Server.Services
             using (var channel = connection.CreateModel())
             {
                 channel.QueueDeclare(queue: Queue,
-                                     durable: false,
+                                     durable: true,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);

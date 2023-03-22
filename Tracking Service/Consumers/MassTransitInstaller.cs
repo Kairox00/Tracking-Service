@@ -65,6 +65,9 @@ namespace Tracking_Service.Consumers
             services.AddScoped<IdentifyConsumer>();
             services.AddScoped<GroupConsumer>();
             services.AddScoped<AliasConsumer>();
+
+
+            Console.WriteLine("MassTransitInstalled");
         }
     }
 
