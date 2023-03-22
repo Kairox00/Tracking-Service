@@ -29,6 +29,8 @@ namespace Tracking_Service.Consumers
                     //cfg.MessageTopology.SetEntityNameFormatter(new BusEnvironmentNameFormatter(cfg.MessageTopology.EntityNameFormatter));
                     cfg.ReceiveEndpoint(MessageQueueConstants.TrackQueue, c =>
                     {
+                        c.ClearSerialization();
+                        c.UseRawJsonSerializer();
                         c.ConfigureConsumer<TrackConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
@@ -36,6 +38,8 @@ namespace Tracking_Service.Consumers
 
                     cfg.ReceiveEndpoint(MessageQueueConstants.IdentifyQueue, c =>
                     {
+                        c.ClearSerialization();
+                        c.UseRawJsonSerializer();
                         c.ConfigureConsumer<IdentifyConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
@@ -43,6 +47,8 @@ namespace Tracking_Service.Consumers
 
                     cfg.ReceiveEndpoint(MessageQueueConstants.GroupQueue, c =>
                     {
+                        c.ClearSerialization();
+                        c.UseRawJsonSerializer();
                         c.ConfigureConsumer<GroupConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
@@ -50,6 +56,8 @@ namespace Tracking_Service.Consumers
 
                     cfg.ReceiveEndpoint(MessageQueueConstants.AliasQueue, c =>
                     {
+                        c.ClearSerialization();
+                        c.UseRawJsonSerializer();
                         c.ConfigureConsumer<AliasConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
