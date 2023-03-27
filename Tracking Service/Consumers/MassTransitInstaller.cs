@@ -16,6 +16,7 @@ namespace Tracking_Service.Consumers
                 x.AddConsumer<IdentifyConsumer>();
                 x.AddConsumer<GroupConsumer>();
                 x.AddConsumer<AliasConsumer>();
+                x.AddConsumer<TestConsumer>();
 
                 x.UsingRabbitMq((ctx, cfg) =>
                 {
@@ -29,8 +30,8 @@ namespace Tracking_Service.Consumers
                     //cfg.MessageTopology.SetEntityNameFormatter(new BusEnvironmentNameFormatter(cfg.MessageTopology.EntityNameFormatter));
                     cfg.ReceiveEndpoint(MessageQueueConstants.TrackQueue, c =>
                     {
-                        c.ClearSerialization();
-                        c.UseRawJsonSerializer();
+                        //c.ClearSerialization();
+                        //c.UseRawJsonSerializer();
                         c.ConfigureConsumer<TrackConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
@@ -38,17 +39,29 @@ namespace Tracking_Service.Consumers
 
                     cfg.ReceiveEndpoint(MessageQueueConstants.IdentifyQueue, c =>
                     {
+                        c.Bind(MessageQueueConstants.IdentifyQueue);
+                        //c.ClearSerialization();
+                        //c.UseRawJsonSerializer();
+                        c.ConfigureConsumer<IdentifyConsumer>(ctx);
+                        // To ignore skipped queue
+                        c.DiscardSkippedMessages();
+                    });
+
+                    cfg.ReceiveEndpoint(MessageQueueConstants.TestQueue, c =>
+                    {
+                        c.Bind(MessageQueueConstants.TestQueue);
                         c.ClearSerialization();
                         c.UseRawJsonSerializer();
-                        c.ConfigureConsumer<IdentifyConsumer>(ctx);
+                        c.UseRawJsonDeserializer();
+                        c.ConfigureConsumer<TestConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
                     });
 
                     cfg.ReceiveEndpoint(MessageQueueConstants.GroupQueue, c =>
                     {
-                        c.ClearSerialization();
-                        c.UseRawJsonSerializer();
+                        //c.ClearSerialization();
+                        //c.UseRawJsonSerializer();
                         c.ConfigureConsumer<GroupConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
@@ -56,8 +69,8 @@ namespace Tracking_Service.Consumers
 
                     cfg.ReceiveEndpoint(MessageQueueConstants.AliasQueue, c =>
                     {
-                        c.ClearSerialization();
-                        c.UseRawJsonSerializer();
+                        //c.ClearSerialization();
+                        //c.UseRawJsonSerializer();
                         c.ConfigureConsumer<AliasConsumer>(ctx);
                         // To ignore skipped queue
                         c.DiscardSkippedMessages();
@@ -73,6 +86,7 @@ namespace Tracking_Service.Consumers
             services.AddScoped<IdentifyConsumer>();
             services.AddScoped<GroupConsumer>();
             services.AddScoped<AliasConsumer>();
+            services.AddScoped<TestConsumer>();
 
 
             Console.WriteLine("MassTransitInstalled");

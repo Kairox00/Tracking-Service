@@ -1,16 +1,23 @@
-﻿namespace Gameball.MassTransit
+﻿using MassTransit;
+using Newtonsoft.Json;
+
+namespace Gameball.MassTransit
 {
+
+    [EntityName(MessageQueueConstants.IdentifyQueue)]
     public class SpecMessage
     {
-        public string clientId { get; set; }
+        [JsonProperty(PropertyName = "clientId")]
+        public string ClientId { get; set; }
 
-        public Dictionary<string, string> properties { get; set;}
+        [JsonProperty(PropertyName = "properties")]
+        public Dictionary<string, string> Properties { get; set;}
 
-        public SpecMessage(string clientId, Dictionary<string, string> properties)
-        {
-            this.clientId = clientId;
-            this.properties = properties;
-        }
+        //public TestMessage(string ClientId, Dictionary<string, string> Properties)
+        //{
+        //    this.ClientId = ClientId;
+        //    this.Properties = Properties;
+        //}
 
     }
 }

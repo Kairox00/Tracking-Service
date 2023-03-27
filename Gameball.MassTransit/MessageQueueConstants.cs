@@ -6,6 +6,7 @@
         public const string IdentifyQueue = "Identify";
         public const string GroupQueue = "Group";
         public const string AliasQueue = "Alias";
+        public const string TestQueue = "Test";
 
     }
 }

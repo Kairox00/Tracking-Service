@@ -11,7 +11,7 @@ namespace Tracking_Service.Handlers
             Dictionary<string, object> data = await ProcessMessage(msg);
             if (Validate(data))
             {
-                Analytics.Client.Alias(msg.clientId, (string)data["newId"], (Options)data["options"]);
+                Analytics.Client.Alias(msg.ClientId, (string)data["newId"], (Options)data["options"]);
             }
         }
 

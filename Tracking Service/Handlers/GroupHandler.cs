@@ -11,7 +11,7 @@ namespace Tracking_Service.Handlers
             Dictionary<string, object> data = await ProcessMessage(msg);
             if (Validate(data))
             {
-                Analytics.Client.Group(msg.clientId, (string)data["groupId"], (IDictionary<string, object>)data["args"], (Options)data["options"]);
+                Analytics.Client.Group(msg.ClientId, (string)data["groupId"], (IDictionary<string, object>)data["args"], (Options)data["options"]);
             }
            
         }

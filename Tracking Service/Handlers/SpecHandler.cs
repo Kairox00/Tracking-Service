@@ -26,20 +26,20 @@ namespace Tracking_Service.Handlers
         /// <returns>A <see cref="Task"/> that results in a <see cref="Dictionary{TKey, TValue}"/></returns>
         protected async Task<Dictionary<string, object>> ProcessMessage(SpecMessage msg)
         {
-            await AddCommonPropsToMessage(msg);
-            Options options = AddErrorToContext(msg);
-            msg.properties.Remove("event", out string @event);
-            msg.properties.Remove("newId", out string newId);
-            msg.properties.Remove("groupId", out string groupId);
-            Dictionary<string, object> args = msg.properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
+            //await AddCommonPropsToMessage(msg);
+            //Options options = AddErrorToContext(msg);
+            msg.Properties.Remove("event", out string @event);
+            msg.Properties.Remove("newId", out string newId);
+            msg.Properties.Remove("groupId", out string groupId);
+            Dictionary<string, object> args = msg.Properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
 
             return new Dictionary<string, object>()
             {
-                {"clientId", msg.clientId },
+                {"clientId", msg.ClientId },
                 {"event", @event },
                 {"newId", newId },
                 {"groupId", groupId },
-                {"options", options},
+                //{"options", options},
                 {"args", args }
             };
         }
@@ -54,7 +54,6 @@ namespace Tracking_Service.Handlers
             return data["clientId"] != null && data["clientId"].GetType() == typeof(string);
         }
 
-
         /// <summary>
         /// Fetches and Inserts the Common Properties into <paramref name="msg"/>.
         /// </summary>
@@ -62,7 +61,7 @@ namespace Tracking_Service.Handlers
         /// <returns></returns>
         private async Task AddCommonPropsToMessage(SpecMessage msg)
         {
-            msg.properties.Remove("needCommon", out string needCommonString);  
+            msg.Properties.Remove("needCommon", out string needCommonString);  
             if(needCommonString != null)
             {
                 string[] needCommon = needCommonString.Split(',');
@@ -73,7 +72,7 @@ namespace Tracking_Service.Handlers
                     await GetCommonProps(needCommon, msg, allProps);
                 }
 
-                allProps.ToList().ForEach(pair => msg.properties[pair.Key] = pair.Value);
+                allProps.ToList().ForEach(pair => msg.Properties[pair.Key] = pair.Value);
             }
                
         }
@@ -105,7 +104,7 @@ namespace Tracking_Service.Handlers
         /// <returns><see cref="Task"/></returns>
         private async Task GetCommonProps(string[] needCommon, SpecMessage msg, Dictionary<string, string> allProps)
         {
-            var CachedGProps = GetCachedProps(msg.clientId);
+            var CachedGProps = GetCachedProps(msg.ClientId);
             string keysToFetch = "";
             foreach (var commonKey in needCommon)
             {
@@ -124,7 +123,7 @@ namespace Tracking_Service.Handlers
             if (keysToFetch.Length > 0)
             {
                 keysToFetch = keysToFetch.Remove(keysToFetch.Length - 1);
-                var response = await HttpController.Get($"https://localhost:7211/{msg.clientId}/propsAll/{keysToFetch}");
+                var response = await HttpController.Get($"https://localhost:7211/{msg.ClientId}/propsAll/{keysToFetch}");
                 Dictionary<string, string> GProp = JsonSerializer.Deserialize<Dictionary<string, string>>(response);
                 GProp.ToList().ForEach(pair => allProps[pair.Key] = pair.Value);
             }
@@ -137,7 +136,7 @@ namespace Tracking_Service.Handlers
         /// <returns><see cref="Options"/> object containing the error message in its <see cref="Context"/></returns>
         private Options AddErrorToContext(SpecMessage msg)
         {
-            msg.properties.Remove("error", out string errorMsg);
+            msg.Properties.Remove("error", out string errorMsg);
             Options options = new Options();
             if (errorMsg != null)
             {

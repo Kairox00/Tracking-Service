@@ -17,7 +17,7 @@ namespace Tracking_Service.Consumers
 
         public async Task Consume(ConsumeContext<SpecMessage> context)
         {
-            _logger.LogInformation("Alias, {clientId}", context.Message.clientId);
+            _logger.LogInformation("Alias, {clientId}", context.Message.ClientId);
             await _handler.SendToTracker(context.Message);
 
         }

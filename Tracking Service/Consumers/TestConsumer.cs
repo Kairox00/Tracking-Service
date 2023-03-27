@@ -4,18 +4,18 @@ using Tracking_Service.Handlers;
 
 namespace Tracking_Service.Consumers
 {
-    public class IdentifyConsumer : IConsumer<SpecMessage>
+    public class TestConsumer : IConsumer<TestMessage>
     {
-        private readonly ILogger<IdentifyConsumer> _logger;
+        private readonly ILogger<TestConsumer> _logger;
         //private readonly IHandler _handler;
 
-        public IdentifyConsumer(ILogger<IdentifyConsumer> logger)
+        public TestConsumer(ILogger<TestConsumer> logger)
         {
             _logger = logger;
  //           _handler = new IdentifyHandler();
         }
 
-        public async Task Consume(ConsumeContext<SpecMessage> context)
+        public async Task Consume(ConsumeContext<TestMessage> context)
         {
             var message = context.Message;
             _logger.LogInformation("Identify, {ClientId}", context.Message.ClientId);

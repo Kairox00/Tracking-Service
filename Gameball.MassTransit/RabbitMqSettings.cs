@@ -7,7 +7,6 @@
         public string Password { get; set; }
         public string Protocol { get; set; }
         public string Port { get; set; }
-        public string EngineAppType { get; set; }
-        public string NotificationAppType { get; set; }
+     
     }
 }
