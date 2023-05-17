@@ -4,7 +4,7 @@ using Segment.Model;
 
 namespace Tracking_Service.Handlers
 {
-    public class GroupHandler : ISpecHandler, IHandler
+    public class GroupHandler : SpecHandler, IHandler
     {
         public async Task SendToTracker(SpecMessage msg)
         {
