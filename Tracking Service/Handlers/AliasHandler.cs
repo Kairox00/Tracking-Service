@@ -1,4 +1,4 @@
-﻿using Gameball.MassTransit;
+﻿using Gameball.MassTransit.DTOs.Segment;
 using Segment;
 using Segment.Model;
 
@@ -6,6 +6,7 @@ namespace Tracking_Service.Handlers
 {
     public class AliasHandler : SpecHandler, IHandler
     {
+
         public async Task SendToTracker(SpecMessage msg)
         {
             Dictionary<string, object> data = await ProcessMessage(msg);

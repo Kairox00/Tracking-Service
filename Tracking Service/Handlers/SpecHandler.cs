@@ -1,4 +1,6 @@
-﻿using Gameball.MassTransit;
+﻿using Gameball.MassTransit.DTOs.Segment;
+using Newtonsoft.Json.Linq;
+using Segment;
 using Segment.Model;
 using StackExchange.Redis;
 using System.Collections;
@@ -9,28 +11,43 @@ using static StackExchange.Redis.Role;
 
 namespace Tracking_Service.Handlers
 {
-    public abstract class SpecHandler
+    public interface ISpecHandler
     {
+
+    }
+
+    public class SpecHandler : ISpecHandler
+    {
+
         RedisController _redis;
-        IDatabase cache;
+        IDatabase _cacheService;
         public SpecHandler()
         {
             _redis = new RedisController();
-            cache = _redis.db;
+            _cacheService = _redis.db; 
         }
+
+        //ICacheService _cacheService;
+        //public SpecHandler(ICacheService cacheService)
+        //{
+        //    
+        //    //_cacheService = cacheService;
+
+        //}
 
         /// <summary>
         /// Performs some common processing to the <see cref="SpecMessage"/> message and prepares it to be sent to the tracking service
         /// </summary>
         /// <param name="msg"></param>
         /// <returns>A <see cref="Task"/> that results in a <see cref="Dictionary{TKey, TValue}"/></returns>
-        protected async Task<Dictionary<string, object>> ProcessMessage(SpecMessage msg)
+        public async Task<Dictionary<string, object>> ProcessMessage(SpecMessage msg)
         {
-            //await AddCommonPropsToMessage(msg);
-            //Options options = AddErrorToContext(msg);
-            msg.Properties.Remove("event", out string @event);
-            msg.Properties.Remove("newId", out string newId);
-            msg.Properties.Remove("groupId", out string groupId);
+            await AddCommonPropsToMessage(msg);
+            Options options = AddErrorToContext(msg);
+
+            msg.Properties.Remove("event", out object @event);
+            msg.Properties.Remove("newId", out object newId);
+            msg.Properties.Remove("groupId", out object groupId);
             Dictionary<string, object> args = msg.Properties.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
 
             return new Dictionary<string, object>()
@@ -39,7 +56,7 @@ namespace Tracking_Service.Handlers
                 {"event", @event },
                 {"newId", newId },
                 {"groupId", groupId },
-                //{"options", options},
+                {"options", options},
                 {"args", args }
             };
         }
@@ -49,7 +66,7 @@ namespace Tracking_Service.Handlers
         /// </summary>
         /// <param name="data"></param>
         /// <returns>True if id exists and is of type <see cref="string"/>, otherwise returns False.</returns>
-        protected bool Validate(Dictionary<string, object> data)
+        public bool Validate(Dictionary<string, object> data)
         {
             return data["clientId"] != null && data["clientId"].GetType() == typeof(string);
         }
@@ -61,10 +78,10 @@ namespace Tracking_Service.Handlers
         /// <returns></returns>
         private async Task AddCommonPropsToMessage(SpecMessage msg)
         {
-            msg.Properties.Remove("needCommon", out string needCommonString);  
-            if(needCommonString != null)
+            msg.Properties.Remove("needCommon", out object commonKeys);
+            if (commonKeys != null)
             {
-                string[] needCommon = needCommonString.Split(',');
+                string[] needCommon = GetCommonKeys(commonKeys);
                 Dictionary<string, string> allProps = new();
 
                 if (needCommon != null && needCommon.Length > 0)
@@ -74,7 +91,26 @@ namespace Tracking_Service.Handlers
 
                 allProps.ToList().ForEach(pair => msg.Properties[pair.Key] = pair.Value);
             }
-               
+
+        }
+
+        public static string[] GetCommonKeys(object needCommonString)
+        {
+            if (needCommonString is JArray)
+            {
+                string[] arr = ((IEnumerable)needCommonString).Cast<object>()
+                    .Select(x => x.ToString())
+                    .Where(c => !string.IsNullOrEmpty(c))
+                    .ToArray();
+                return arr;
+            }
+            else
+            {
+                var temp = new List<string>();
+                var value = Convert.ToString(needCommonString);
+                temp.Add(value);
+                return temp.ToArray();
+            }
         }
 
         /// <summary>
@@ -82,11 +118,12 @@ namespace Tracking_Service.Handlers
         /// </summary>
         /// <param name="id">Id of the user in the cache.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of the cached properties.</returns>
-        private Dictionary<string, Dictionary<string, string>> GetCachedProps(string id)
+        private Dictionary<string, Dictionary<string, string>> GetCachedProps(string clientId)
         {
-            if (cache.KeyExists(id))
+            string id = $"{clientId}_segment_g1";
+            if (_cacheService.KeyExists(id))
             {
-                string temp = cache.StringGet(id);
+                string temp = _cacheService.StringGet(id);
                 return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(temp);
             }
             else
@@ -123,7 +160,9 @@ namespace Tracking_Service.Handlers
             if (keysToFetch.Length > 0)
             {
                 keysToFetch = keysToFetch.Remove(keysToFetch.Length - 1);
-                var response = await HttpController.Get($"https://localhost:7211/{msg.ClientId}/propsAll/{keysToFetch}");
+
+                //var response = await HttpController.Get($"https://localhost:7211/{msg.ClientId}/propsAll/{keysToFetch}");
+                var response = await HttpController.Get($"https://api.sigma.gameball.app/internal/v1/segment/g1?clientIds={msg.ClientId}");
                 Dictionary<string, string> GProp = JsonSerializer.Deserialize<Dictionary<string, string>>(response);
                 GProp.ToList().ForEach(pair => allProps[pair.Key] = pair.Value);
             }
@@ -134,9 +173,9 @@ namespace Tracking_Service.Handlers
         /// </summary>
         /// <param name="msg">The <see cref="SpecMessage"/> to be sent to the tracking service</param>
         /// <returns><see cref="Options"/> object containing the error message in its <see cref="Context"/></returns>
-        private Options AddErrorToContext(SpecMessage msg)
+        public static Options AddErrorToContext(SpecMessage msg)
         {
-            msg.Properties.Remove("error", out string errorMsg);
+            msg.Properties.Remove("error", out object errorMsg);
             Options options = new Options();
             if (errorMsg != null)
             {

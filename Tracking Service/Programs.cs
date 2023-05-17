@@ -1,6 +1,9 @@
 ﻿using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Segment;
+using Tracking_Service.Cache;
 using Tracking_Service.Consumers;
+using Tracking_Service.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,11 @@ builder.Services.AddMvc()
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.InstallMassTransit(builder.Configuration);
+
+builder.Services.AddSingleton(typeof(RedisServer));
+builder.Services.AddScoped(typeof(ICacheService), typeof(CacheService));
+
+builder.Services.AddScoped(typeof(ISpecHandler), typeof(SpecHandler));
 
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
@@ -85,8 +93,9 @@ app.UseEndpoints(endpoints =>
     endpoints.MapRazorPages();
 });
 
-
+Analytics.Initialize("xOYECODe4mKLEVWyF5ZGoE04cU8CxnTj");
+Analytics.Client.Identify("Initialized", new Dictionary<string, object>() { { "hello", "world" } });
 
 
 app.Run();
-//Analytics.Initialize("xOYECODe4mKLEVWyF5ZGoE04cU8CxnTj");
+

@@ -1,10 +1,10 @@
-﻿using Gameball.MassTransit;
+﻿using Gameball.MassTransit.DTOs.Segment;
 using Segment;
 using Segment.Model;
 
 namespace Tracking_Service.Handlers
 {
-    public class GroupHandler : SpecHandler, IHandler
+    public class GroupHandler : ISpecHandler, IHandler
     {
         public async Task SendToTracker(SpecMessage msg)
         {

@@ -1,10 +1,10 @@
-﻿using Gameball.MassTransit;
+﻿using Gameball.MassTransit.DTOs.Segment;
 using MassTransit;
 using Tracking_Service.Handlers;
 
 namespace Tracking_Service.Consumers
 {
-    public class GroupConsumer : IConsumer<SpecMessage>
+    public class GroupConsumer : IConsumer<GroupMessage>
     {
         private readonly ILogger<GroupConsumer> _logger;
         private readonly IHandler _handler;
@@ -15,9 +15,9 @@ namespace Tracking_Service.Consumers
             _handler = new GroupHandler();
         }
 
-        public async Task Consume(ConsumeContext<SpecMessage> context)
+        public async Task Consume(ConsumeContext<GroupMessage> context)
         {
-            _logger.LogInformation("Group, {clientId}", context.Message.ClientId);
+            _logger.LogInformation("Group, {ClientId}", context.Message.ClientId);
             await _handler.SendToTracker(context.Message);
 
         }

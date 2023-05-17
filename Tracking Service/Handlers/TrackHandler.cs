@@ -1,4 +1,4 @@
-﻿using Gameball.MassTransit;
+﻿using Gameball.MassTransit.DTOs.Segment;
 using Segment;
 using Segment.Model;
 

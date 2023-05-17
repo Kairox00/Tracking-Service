@@ -1,6 +1,6 @@
 ﻿using Segment;
 using Segment.Model;
-using Gameball.MassTransit;
+using Gameball.MassTransit.DTOs.Segment;
 
 namespace Tracking_Service.Handlers
 {
