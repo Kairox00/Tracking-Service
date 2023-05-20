@@ -8,12 +8,10 @@ namespace Tracking_Service.Managers
 {
     public class IdentifyManager : IIdentifyManager
     {
-        private ICacheService _cacheService;
         private IShared _shared;
 
-        public IdentifyManager(ICacheService cacheService, IShared shared)
+        public IdentifyManager(IShared shared)
         {
-            _cacheService = cacheService;
             _shared = shared;
         }
 

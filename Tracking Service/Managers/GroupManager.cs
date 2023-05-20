@@ -8,12 +8,10 @@ namespace Tracking_Service.Managers
 {
     public class GroupManager : IGroupManager
     {
-        private ICacheService _cacheService;
         private IShared _shared;
 
-        public GroupManager(ICacheService cacheService, IShared shared)
+        public GroupManager(IShared shared)
         {
-            _cacheService = cacheService;
             _shared = shared;
         }
 

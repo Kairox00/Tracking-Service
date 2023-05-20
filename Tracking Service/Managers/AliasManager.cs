@@ -8,12 +8,10 @@ namespace Tracking_Service.Managers
 {
     public class AliasManager : IAliasManager
     {
-        private ICacheService _cacheService;
         private IShared _shared;
 
-        public AliasManager(ICacheService cacheService, IShared shared)
+        public AliasManager(IShared shared)
         {
-            _cacheService = cacheService;
             _shared = shared;
         }
 
