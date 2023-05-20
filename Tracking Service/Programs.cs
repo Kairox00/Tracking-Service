@@ -1,9 +1,14 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Gameball.MassTransit;
+using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Segment;
 using Tracking_Service.Cache;
+using Tracking_Service.Configurations;
 using Tracking_Service.Consumers;
 using Tracking_Service.Handlers;
+using Tracking_Service.Managers;
+using Tracking_Service.Managers.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,8 +38,11 @@ builder.Services.InstallMassTransit(builder.Configuration);
 
 builder.Services.AddSingleton(typeof(RedisServer));
 builder.Services.AddScoped(typeof(ICacheService), typeof(CacheService));
-
-builder.Services.AddScoped(typeof(ISpecHandler), typeof(SpecHandler));
+builder.Services.AddScoped(typeof(IAliasManager), typeof(AliasManager));
+builder.Services.AddScoped(typeof(IGroupManager), typeof(GroupManager));
+//builder.Services.AddScoped(typeof(ITrackManager), typeof(TrackManager));
+builder.Services.AddScoped(typeof(IIdentifyManager), typeof(IdentifyManager));
+builder.Services.AddScoped(typeof(IShared), typeof(Shared));
 
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
@@ -93,7 +101,8 @@ app.UseEndpoints(endpoints =>
     endpoints.MapRazorPages();
 });
 
-Analytics.Initialize("xOYECODe4mKLEVWyF5ZGoE04cU8CxnTj");
+var segmentSettings = builder.Configuration.GetSection("SegmentSettings").Get<SegmentSettings>();
+Analytics.Initialize(segmentSettings.ApiKey);
 Analytics.Client.Identify("Initialized", new Dictionary<string, object>() { { "hello", "world" } });
 
 

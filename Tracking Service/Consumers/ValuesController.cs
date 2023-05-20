@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Gameball.MassTransit.DTOs.Segment;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tracking_Service.Cache;
+using Tracking_Service.Managers.Interfaces;
 
 namespace Tracking_Service.Consumers
 {
@@ -9,9 +11,11 @@ namespace Tracking_Service.Consumers
     public class ValuesController : ControllerBase
     {
         private ICacheService _cacheService;
-        public ValuesController(ICacheService cacheService)
+        private IIdentifyManager _identifyManager;
+        public ValuesController(ICacheService cacheService, IIdentifyManager identifyManager)
         {
             _cacheService = cacheService;
+            _identifyManager = identifyManager;
         }
 
 
@@ -23,10 +27,18 @@ namespace Tracking_Service.Consumers
         }
 
         [HttpGet("r")]
-        public IActionResult REdis()
+        public IActionResult Redis()
         {
             _cacheService.Set("galal", "12");
             return Ok("hi redis");
+        }
+
+        [HttpGet("i")]
+        public IActionResult Identify()
+        {
+            SpecMessage message = new SpecMessage("123", new Dictionary<string, object> { { "hi", "bye" } });
+            _identifyManager.SendToTracker(message);
+            return Ok("i");
         }
     }
 
